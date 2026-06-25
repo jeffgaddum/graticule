@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "graticule"
+version = "0.1.0"
+description = "Panel-aware causal foundation model for counterfactual macro-policy evaluation"
+requires-python = ">=3.9"
+dependencies = [
+    "torch==2.0.1",
+    "numpy<2",
+    "scipy==1.10.1",
+    "cyclopts>=3.0",
+    "confection>=0.1.4",
+]
+
+[project.scripts]
+graticule = "graticule.burin:main"
+
+[tool.setuptools]
+packages = ["graticule"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["provings"]
+
+[tool.black]
+line-length = 100
+target-version = ["py39"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["graticule"]
+warn_return_any = false
+disallow_untyped_calls = false
+disallow_untyped_decorators = false
+disallow_subclassing_any = false
+disallow_any_generics = false
+
+[[tool.mypy.overrides]]
+module = ["confection.*", "cyclopts.*", "scipy.*"]
+ignore_missing_imports = true

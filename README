@@ -1,0 +1,66 @@
+graticule
+=========
+
+graticule charts counterfactual policy responses across country-by-year panels. It learns a
+panel-aware transformer over a curriculum of synthetic economic structural causal models, then
+reads heterogeneous treatment effects straight off the conditioned representation. The work targets
+panel causal inference for macroeconomic policy and was prepared for PLOS ONE.
+
+Sheet index
+-----------
+graticule/projection   panel token = covariate map + unit datum + sinusoidal clock
+graticule/hachure      within-unit causal shading and cross-unit spillover bias
+graticule/relief       stacked two-axis attention encoder
+graticule/legend       Gaussian-mixture counterfactual head and prototype subgroup discovery
+graticule/contour      factual and potential-outcome objective terms
+graticule/compass      root-PEHE, coverage, regret, walk-forward and LOCO readings, signed-rank tests
+graticule/chart        engraving loop: AdamW, cosine warmup, EMA, atomic checkpoints
+graticule/gazetteer    synthetic-SCM cartography and benchmark adapters
+graticule/cartouche    confection .cfg sheets resolved into frozen specs
+graticule/burin        cyclopts entry points: engrave / read / proof / plate
+
+Projection & datum (install)
+----------------------------
+pip:
+  python -m pip install --extra-index-url https://download.pytorch.org/whl/cu118 -r requirements.txt
+  python -m pip install -e .
+conda:
+  conda env create -f environment.yml && conda activate graticule
+docker:
+  docker build -t graticule . && docker run --gpus all graticule read --sheet sheets/main.cfg
+
+Compilation sources (data)
+--------------------------
+Reachable benchmark and macro-panel links sit in data-sources.txt with licenses and the
+2026-06-25 reachability note. The synthetic curriculum runs without any download.
+
+Engraving the plates (train)
+----------------------------
+primary sheet:
+  bash scripts/engrave_run.sh sheets/main.cfg
+ablation sheets:
+  graticule engrave --sheet sheets/ablation_no_unit_fe.cfg
+  graticule engrave --sheet sheets/ablation_no_spillover.cfg
+  graticule engrave --sheet sheets/ablation_single_family.cfg
+
+Reading the graticule (eval)
+----------------------------
+  graticule read --sheet sheets/main.cfg --ckpt engravings/atlas.pt
+expected readings on the held-out plate (10 seeds), values x10^-3 where marked:
+  root-PEHE (IHDP)          0.42 +/- 0.06
+  ATE error (IHDP)          0.009 +/- 0.003
+  interval coverage         0.94 +/- 0.01
+  walk-forward RMSE gain    24-31 % over the strongest panel baseline
+  LOCO transfer gap         8.3 %
+tolerances are seed-to-seed; the synthetic curriculum recovers the ordering, not the third decimal.
+
+Sheet specifications (compute)
+------------------------------
+Reported runs use 16 x A100-80GB, batch 96 x grad-accum 6 x world 16 (effective 9216), lr 2e-6,
+700 epochs, fp32, cosine schedule with 30-epoch warmup, 850k pre-training SCMs. Wall-clock is
+multi-day at this width and the figures here are not softened. Pins are torch 2.0.1 + CUDA 11.8 on
+python 3.9.
+
+Revisions
+---------
+0.1.0   first engraving of the panel atlas.

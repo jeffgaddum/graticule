@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+engravings/
+engravings_smoke/
+*.pt
+*.onnx
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
