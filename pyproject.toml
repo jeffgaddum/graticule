@@ -21,10 +21,6 @@ graticule = "graticule.burin:main"
 [tool.setuptools]
 packages = ["graticule"]
 
-[tool.pytest.ini_options]
-pythonpath = ["."]
-testpaths = ["provings"]
-
 [tool.black]
 line-length = 100
 target-version = ["py39"]
